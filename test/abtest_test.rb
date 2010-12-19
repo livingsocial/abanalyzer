@@ -17,8 +17,13 @@ class ABTestTest < Test::Unit::TestCase
     end
   end
 
-  def test_matrix_functions
-    m = ABAnalyzer::Matrix.new @values
-    assert_equal 1, 1
+  def test_results
+    abt = ABAnalyzer::ABTest.new @values
+
+    chisquare = 1 - Statistics2.chi2dist(2, 16.2037037037037)
+    assert_equal abt.chisquare_p, chisquare
+
+    gtest = 1 - Statistics2.chi2dist(2, 2*8.13286375180066)
+    assert_equal abt.gtest_p, gtest
   end
 end

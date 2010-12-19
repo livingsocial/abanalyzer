@@ -30,7 +30,7 @@ spec = Gem::Specification.new do |s|
   s.files = FileList["lib/**/*", "[A-Z]*", "Rakefile", "docs/**/*"]
   s.homepage = "https://github.com/livingsocial/abanalyzer"
   s.require_paths = ["lib"]
-  s.add_dependency('statistics', '>= 0.54')
+  s.add_dependency('statistics2', '>= 0.54')
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|

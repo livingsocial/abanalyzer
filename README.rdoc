@@ -1,127 +1,51 @@
 = ABAnalyzer
 
-ABAnalyzer is a Ruby library that will perform testing to determine if there is a statistical difference in categorical data.
-
-ABAnalyzer 
+ABAnalyzer is a Ruby library that will perform testing to determine if there is a statistical difference in categorical data (typically called an A/B Test).
 
 == Installation
-First, install HBase/Hadoop or Cassandra (>= 0.7.0-rc2).  Then, install the appropriate gem:
-  gem install hbaserb
-  # or
-  gem install cassandra
-
-If you're using HBase, make sure the HBase Thrift interface has been started as well.  Then:
-  gem install ankusa
+Simply run:
+  gem install abanalyzer
 
 == Basic Usage
-Using the naive Bayes classifier:
+The simplest test (which uses a gtest):
 
   require 'rubygems'
-v = { :rep => { :male => 200, :female => 250 }, :dem => { :male => 150, :female => 300}, :ind => { :male => 50, :female => 50 }}
-v = { :m => { :g => 127, :s => 99, :b => 264 }, :g => { :g => 116, :s => 67, :b => 161 } }
-v = { :non => { :bought => 80, :didnt => 9920 }, :sent => { :bought => 160, :didnt => 9840 } }
-r = ABAnalyzer::Results.new v
-puts r.different?
+  require 'abanalyzer'
+  
+  values = {}
+  values[:agroup] = { :opened => 100, :unopened => 300 }
+  values[:bgroup] = { :opened => 50, :unopened => 350 }
+
+  tester = ABAnalyzer::ABTest.new values
+  # Are the two different?  Returns true or false (at 0.05 level of significance)
+  puts tester.different?
 
 
-
-
-
-
-
-  require 'ankusa'
-  require 'ankusa/hbase_storage'
-
-  # connect to HBase 
-  storage = Ankusa::HBaseStorage.new 'localhost'
-  c = Ankusa::NaiveBayesClassifier.new storage
-
-  # Each of these calls will return a bag-of-words
-  # has with stemmed words as keys and counts as values
-  c.train :spam, "This is some spammy text"
-  c.train :good, "This is not the bad stuff"
-
-  # This will return the most likely class (as symbol)
-  puts c.classify "This is some spammy text"
-
-  # This will return Hash with classes as keys and 
-  # membership probability as values
-  puts c.classifications "This is some spammy text"
-
-  # If you have a large corpus, the probabilities will
-  # likely all be 0.  In that case, you must use log
-  # likelihood values
-  puts c.log_likelihoods "This is some spammy text"
-
-  # get a list of all classes
-  puts c.classnames
-
-  # close connection
-  storage.close
-
-
-== KL Diverence Classifier
-There is a Kullback–Leibler divergence classifier as well.  KL divergence is a distance measure (though not a true metric because it does not satisfy the triangle inequality).  The KL classifier simply measures the relative entropy between the text you want to classify and each of the classes.  The class with the shortest "distance" is the best class.  You may find that for a especially large corpus it may be slightly faster to use this classifier (since prior probablities are never calculated, only likelihoods).
-
-The API is the same as the NaiveBayesClassifier, except rather than calling "classifications" if you want actual numbers you call "distances".  
+== Multiple Categories
+You can use the ABAnalyzer module to test for differences in more than two categories.  For instance, to test accross three:
 
   require 'rubygems'
-  require 'ankusa'
-  require 'ankusa/hbase_storage'
+  require 'abanalyzer'
+  
+  values = {}
+  values[:agroup] = { :male => 200, :female => 250 }
+  values[:bgroup] = { :male => 150, :female => 300}
+  values[:cgroup] = { :male => 50, :female => 50 }
 
-  # connect to HBase 
-  storage = Ankusa::HBaseStorage.new 'localhost'
-  c = Ankusa::KLDivergenceClassifier.new storage
+  tester = ABAnalyzer::ABTest.new values
+  # Are the two different?  Returns true or false (at 0.05 level of significance)
+  puts tester.different?
 
-  # Each of these calls will return a bag-of-words
-  # has with stemmed words as keys and counts as values
-  c.train :spam, "This is some spammy text"
-  c.train :good, "This is not the bad stuff"
 
-  # This will return the most likely class (as symbol)
-  puts c.classify "This is some spammy text"
+== Tests Available
+You can get the actual p-value for either a Chi-Square test for independence or a G-Test for independence.
 
-  # This will return Hash with classes as keys and 
-  # distances >= 0 as values
-  puts c.distances "This is some spammy text"
-
-  # get a list of all classes
-  puts c.classnames
-
-  # close connection
-  storage.close
-
-== Storage Methods
-Ankusa has a generalized storage interface that has been implemented for HBase, Cassandra, and in-memory storage.
-
-Memory storage can be used when you have a very small corpora
-  require 'ankusa/memory_storage'
-  storage = Ankusa::MemoryStorage.new
-
-HBase storage:
-  require 'ankusa/hbase_storage'
-  # defaults: host='localhost', port=9090, frequency_tablename="ankusa_word_frequencies", summary_tablename="ankusa_summary"
-  storage = Ankusa::HBaseStorage.new host, port, frequency_tablename, summary_tablename
-
-For Cassandra storage:
-* You will need Cassandra version 0.7.0-rc2 or greater.
-* You will need to set a max number classes since current implementation of the Ruby Cassandra client doesn't support table scans.  
-* Prior to using the Cassandra storage you will need to run the following command from the cassandra-cli: "create keyspace ankusa with replication_factor = 1".  This should be fixed with a new release candidate for Cassandra.
-
-To use the Cassandra storage class:
-  require 'ankusa/cassandra_storage'
-  # defaults: host='127.0.0.1', port=9160, keyspace = 'ankusa', max_classes = 100
-  storage = Ankusa::HBaseStorage.new host, port, keyspace, max_classes
+  ...
+  tester = ABAnalyzer::ABTest.new values
+  puts tester.chisquare_p
+  puts tester.gtest_p
 
 
 == Running Tests
-You can run the tests for any of the three storage methods.  For instance, for memory storage:
-  rake test_memory
-
-For the other methods you will need to edit the file test/config.yml and set the configuration params.  Then:
-  rake test_hbase
-  # or
-  rake test_cassandra
-
-
-
+Testing can be run by using:
+  rake test
