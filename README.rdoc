@@ -1,6 +1,8 @@
 = ABAnalyzer
 
-ABAnalyzer is a Ruby library that will perform testing to determine if there is a statistical difference in categorical data (typically called an A/B Test).
+ABAnalyzer is a Ruby library that will perform testing to determine if there is a statistical difference in categorical data (typically called an A/B Test).  By default, it uses a G-Test for independence, but a Chi-Square test for independence can also be used.  For more information, see:
+* http://en.wikipedia.org/wiki/G-test
+* http://en.wikipedia.org/wiki/Pearson%27s_chi-square_test
 
 == Installation
 Simply run:
