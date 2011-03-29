@@ -12,6 +12,11 @@ class ABTestTest < Test::Unit::TestCase
     end
 
     assert_raise ABAnalyzer::InsufficientDataError do 
+      m = ABAnalyzer::ABTest.new({ :one => { :a => 10, :b => 20 }, :two => { :a => 5, :b => -6 } })
+      p = m.gtest_p
+    end
+
+    assert_raise ABAnalyzer::InsufficientDataError do 
       m = ABAnalyzer::ABTest.new({ :one => { :a => 1, :b => 1 }, :two => { :a => 1, :b => 1 } })
       p = m.gtest_p
     end

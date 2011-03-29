@@ -36,7 +36,7 @@ module ABAnalyzer
     private
     def test_sufficient_data(colname, rowname, expected, value)
       msg = "Insufficient data size for column #{colname} row #{rowname}.  Expected value must be >= 5, and value must be > 0."
-      raise InsufficientDataError, msg if expected < 5 or value == 0
+      raise InsufficientDataError, msg if expected < 5 or value <= 0
     end
 
     def expected(colname, rowname)

@@ -1,8 +1,13 @@
+$:.push File.expand_path("../lib", __FILE__)
 require 'rubygems'
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
+
+require 'date'
+
+require "abanalyzer/version"
 
 desc "Create documentation"
 Rake::RDocTask.new("doc") { |rdoc|
@@ -21,9 +26,9 @@ Rake::TestTask.new("test") { |t|
 
 spec = Gem::Specification.new do |s|
   s.name = "abanalyzer"
-  s.version = "0.0.1"
+  s.version = ABAnalyzer::VERSION
   s.authors = ["Brian Muller"]
-  s.date = %q{2010-12-19}
+  s.date = Date.today.to_s
   s.description = "A/B test analysis library for Ruby - performs Chi-Square tests and G-tests on A/B results."
   s.summary = "Performs statistical tests for significant differences in categorical data."
   s.email = "brian.muller@livingsocial.com"
