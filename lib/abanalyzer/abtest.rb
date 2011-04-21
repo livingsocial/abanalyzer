@@ -12,25 +12,35 @@ module ABAnalyzer
     def different?(sig=0.05)
       gtest_p < sig
     end
-
-    def chisquare_p
-      sum = 0
+    
+    #score as opposed to p value
+    def chisquare_s
+      sum=0
       @values.each_cell { |colname, rowname, value|
         ex = expected(colname, rowname)
         test_sufficient_data(colname, rowname, ex, value)
         sum += ((value - ex) ** 2) / ex
       }
-      1 - Statistics2.chi2dist(df, sum)
+      return sum
     end
-
-    def gtest_p
-      sum = 0
+    
+    def gtest_s
+      sum=0
       @values.each_cell { |colname, rowname, value|
         ex = expected(colname, rowname)
         test_sufficient_data(colname, rowname, ex, value)
         sum += value * Math.log(value / ex)
       }
-      1 - Statistics2.chi2dist(df, 2*sum)      
+      return sum
+    end
+    
+
+    def chisquare_p
+      1 - Statistics2.chi2dist(df, self.chisquare_s)
+    end
+
+    def gtest_p
+      1 - Statistics2.chi2dist(df, 2*self.gtest_s)      
     end
     
     private
