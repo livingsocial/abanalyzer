@@ -34,11 +34,11 @@ module ABAnalyzer
     end
 
     def chisquare_p
-      1 - Statistics2.chi2dist(df, self.chisquare_score)
+      ABTest.chi2dist(df, self.chisquare_score)
     end
 
     def gtest_p
-      1 - Statistics2.chi2dist(df, 2*self.gtest_score)
+      ABTest.chi2dist(df, 2*self.gtest_score)
     end
     
     private
@@ -53,6 +53,10 @@ module ABAnalyzer
 
     def df
       (@values.columns.length - 1) * (@values.rows.length - 1)
+    end
+
+    def self.chi2dist(degrees, score)
+      1 - Statistics2.chi2dist(degrees, score)
     end
   end
 
