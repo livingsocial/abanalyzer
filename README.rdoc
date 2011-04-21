@@ -48,6 +48,14 @@ You can get the actual p-value for either a Chi-Square test for independence or 
   puts tester.gtest_p
 
 
+You can additionally get the actual score for either a Chi-Square test for independence or a G-Test for independence.
+
+  ...
+  tester = ABAnalyzer::ABTest.new values
+  puts tester.chisquare_score
+  puts tester.gtest_score
+
+
 == Running Tests
 Testing can be run by using:
   rake test

@@ -13,8 +13,7 @@ module ABAnalyzer
       gtest_p < sig
     end
     
-    #score as opposed to p value
-    def chisquare_s
+    def chisquare_score
       sum=0
       @values.each_cell { |colname, rowname, value|
         ex = expected(colname, rowname)
@@ -24,7 +23,7 @@ module ABAnalyzer
       return sum
     end
     
-    def gtest_s
+    def gtest_score
       sum=0
       @values.each_cell { |colname, rowname, value|
         ex = expected(colname, rowname)
@@ -33,14 +32,13 @@ module ABAnalyzer
       }
       return sum
     end
-    
 
     def chisquare_p
-      1 - Statistics2.chi2dist(df, self.chisquare_s)
+      1 - Statistics2.chi2dist(df, self.chisquare_score)
     end
 
     def gtest_p
-      1 - Statistics2.chi2dist(df, 2*self.gtest_s)      
+      1 - Statistics2.chi2dist(df, 2*self.gtest_score)
     end
     
     private
