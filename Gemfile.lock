@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    abanalyzer (0.0.5)
+    abanalyzer (0.0.6)
       statistics2 (>= 0.54)
 
 GEM

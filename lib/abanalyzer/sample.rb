@@ -22,9 +22,10 @@ module ABAnalyzer
   end
 
   # Calculate the confidence interval given the number of successes and trials at
-  # the desired level of significance.  Returns an Array of [lower, upper]
-  def self.confidence_interval(successes, trials, alpha)
+  # the desired confidence level.  Returns an Array of [lower, upper]
+  def self.confidence_interval(successes, trials, confidence)
     sides = 2.0
+    alpha = 1 - confidence
     zcrit = Statistics2.pnormaldist(1 - (alpha / sides))
     p = successes.to_f / trials.to_f
 
@@ -34,8 +35,8 @@ module ABAnalyzer
 
   # Like confidence_interval, but returns the relative interval compared to the baseline given
   # in compared_proportion
-  def self.relative_confidence_interval(successes, trials, compared_proportion, alpha)
-    ci = confidence_interval(successes, trials, alpha)
+  def self.relative_confidence_interval(successes, trials, compared_proportion, confidence)
+    ci = confidence_interval(successes, trials, confidence)
     [(ci.first - compared_proportion) / compared_proportion, (ci.last - compared_proportion) / compared_proportion]
   end
   
