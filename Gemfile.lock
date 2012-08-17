@@ -1,0 +1,16 @@
+PATH
+  remote: .
+  specs:
+    abanalyzer (0.0.5)
+      statistics2 (>= 0.54)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    statistics2 (0.54)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  abanalyzer!

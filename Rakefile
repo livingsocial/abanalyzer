@@ -1,16 +1,12 @@
-$:.push File.expand_path("../lib", __FILE__)
 require 'rubygems'
-require 'rake'
+require 'bundler'
 require 'rake/testtask'
-require 'rake/rdoctask'
-require 'rake/gempackagetask'
+require 'rdoc/task'
 
-require 'date'
-
-require "abanalyzer/version"
+Bundler::GemHelper.install_tasks
 
 desc "Create documentation"
-Rake::RDocTask.new("doc") { |rdoc|
+RDoc::Task.new("doc") { |rdoc|
   rdoc.title = "ABAnalyzer - A/B test analysis library for Ruby"
   rdoc.rdoc_dir = 'docs'
   rdoc.rdoc_files.include('README.rdoc')
@@ -19,29 +15,7 @@ Rake::RDocTask.new("doc") { |rdoc|
 
 desc "Run all unit tests"
 Rake::TestTask.new("test") { |t|
-  t.libs << "lib"
+  t.libs +=[ "lib", "." ]
   t.test_files = FileList['test/*_test.rb']
   t.verbose = true
 }
-
-spec = Gem::Specification.new do |s|
-  s.name = "abanalyzer"
-  s.version = ABAnalyzer::VERSION
-  s.authors = ["Brian Muller"]
-  s.date = Date.today.to_s
-  s.description = "A/B test analysis library for Ruby - performs Chi-Square tests and G-tests on A/B results."
-  s.summary = "Performs statistical tests for significant differences in categorical data."
-  s.email = "brian.muller@livingsocial.com"
-  s.files = FileList["lib/**/*", "[A-Z]*", "Rakefile", "docs/**/*"]
-  s.homepage = "https://github.com/livingsocial/abanalyzer"
-  s.require_paths = ["lib"]
-  s.add_dependency('statistics2', '>= 0.54')
-end
-
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.need_zip = true
-  pkg.need_tar = true
-end
-
-desc "Default task: builds gem and runs tests"
-task :default => [ :gem, :test ]
